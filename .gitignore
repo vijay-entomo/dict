@@ -8,9 +8,6 @@
 *.swp
 *.swo
 
-# build artifacts
-/dist
-
 # miscellaneous
 .DS_Store
 *.log
