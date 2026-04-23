@@ -1,0 +1,7 @@
+<h1>
+    <div class="word" *ngFor="let word of words">
+        <span *ngFor="let letter of word.split('')" class="char" (mouseenter)="enter($event)">
+            {{letter}}
+        </span>
+    </div>
+</h1>

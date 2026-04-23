@@ -1,0 +1,17 @@
+# dependencies
+/node_modules
+/.angular
+
+# IDEs and editors
+/.vscode
+.idea
+*.swp
+*.swo
+
+# build artifacts
+/dist
+
+# miscellaneous
+.DS_Store
+*.log
+*.7z

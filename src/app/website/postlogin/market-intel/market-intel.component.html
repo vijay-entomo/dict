@@ -1,0 +1,353 @@
+<section class="market_section">
+  <div class="container">
+    <!-- ── QUESTIONNAIRE ── -->
+    @if (showQuestionnaire) {
+      <div class="questionnaire-wrapper">
+        <div class="q-eyebrow">
+          <span class="q-dot"></span>
+          <span>Career Intelligence Engine</span>
+        </div>
+
+        <!-- Main question — bold & large -->
+        <div class="display-1">
+          What's your<br />
+          career world?
+        </div>
+        <p class="mt-3">
+          Enter your field below to unlock real-time market intelligence, growth trends, and
+          personalised career pathways.
+        </p>
+
+        <!-- Search input -->
+        <div class="q-input-group position-relative mt-5 mb-3">
+          <!-- Country Selector -->
+          <div class="q-country-input-box searchable" (click)="toggleCountryDropdown()" style="cursor: pointer; position: relative;">
+            <div class="q-country-select-inline d-flex align-items-center justify-content-between w-100">
+               <span style="font-size: 0.9rem; font-weight: 600;">{{ selectedCountry }}</span>
+               <div class="q-chevron-icon position-static">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+            </div>
+
+            @if (countryDropdownOpen) {
+              <div class="q-country-dropdown-wrapper" (click)="$event.stopPropagation()">
+                <div class="q-country-search-box">
+                  <input
+                    id="country-search-input"
+                    type="text"
+                    [(ngModel)]="countrySearch"
+                    (ngModelChange)="onCountrySearch()"
+                    placeholder="Search 195+ countries..."
+                    (click)="$event.stopPropagation()"
+                  />
+                </div>
+                <ul class="q-country-list">
+                  @for (c of filteredCountries; track c) {
+                    <li (click)="selectCountry(c)" [class.active]="c === selectedCountry">
+                      {{ c }}
+                    </li>
+                  }
+                  @if (filteredCountries.length === 0) {
+                    <li class="no-results">No countries found</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+
+
+          <div class="q-input-divider"></div>
+
+          <div class="q-input-icon">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </div>
+          <input
+            id="field-search-input"
+            type="text"
+            class="q-field-input"
+            [placeholder]="animatedPlaceholder"
+            [(ngModel)]="fieldInput"
+            (ngModelChange)="onFieldInput()"
+            (keydown.enter)="generateMI()"
+            autocomplete="off"
+          />
+          <button
+            class="q-submit-btn"
+            (click)="generateMI()"
+            [disabled]="isLoadingMI || fieldInput.trim().length < 1"
+          >
+            @if (isLoadingMI) {
+              <span class="q-spinner-dots"><span></span><span></span><span></span></span>
+            } @else {
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            }
+          </button>
+
+          <!-- Suggestions dropdown -->
+          @if (suggestions.length > 0) {
+            <ul class="q-suggestions">
+              @for (s of suggestions; track s) {
+                <li (click)="selectSuggestion(s)">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                    />
+                  </svg>
+                  <span>{{ s }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <!-- Quick-pick popular fields -->
+        <div class="q-quickpicks">
+          <span class="q-quickpick-label">Popular:</span>
+          @for (
+            tag of [
+              'Software Engineering',
+              'Embedded Systems',
+              'Electrical Engineering',
+              'Finance',
+              'VLSI',
+              'Data Science',
+              'Marketing',
+              'Semiconductors',
+            ];
+            track tag
+          ) {
+            <button class="q-quick-tag" (click)="selectSuggestion(tag)">{{ tag }}</button>
+          }
+        </div>
+
+        @if (isLoadingMI) {
+          <div class="q-loading-state">
+            <div class="q-loading-bar">
+              <div class="q-loading-fill"></div>
+            </div>
+            <p class="q-loading-text">
+              Analysing <strong>{{ fieldInput }}</strong> market…
+            </p>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ── MARKET INTELLIGENCE (after field selected) ── -->
+    @if (!showQuestionnaire && selectedRole) {
+      <div class="">
+        <div class="row align-items-center mb-2">
+          <div class="col-md-8">
+            <div class="">
+              <div class="pill">live data feed · {{ selectedField }} · {{ selectedCountry }}</div>
+              <div class="display-1">market intelligence</div>
+            </div>
+          </div>
+          <div class="col-md-4 d-flex justify-content-end">
+            <button
+              class="btn-website px-4 py-2"
+              style="min-width: fit-content"
+              (click)="resetQuestionnaire()"
+            >
+              Change Field
+            </button>
+          </div>
+        </div>
+        <p class="mb-5" style="opacity: 0.65; font-size: 0.95rem">
+          Real-time insights into what the industry is demanding right now. Click a role to see its
+          details and update your career path.
+        </p>
+        <div class="row mt-2 align-items-stretch">
+          <div class="col-md-4 mt-3">
+            <div class="section_card bg-1 h-100 d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start mb-4">
+                <div class="section_card_title">Trending Roles</div>
+                <span
+                  class="badge rounded-pill text-uppercase text-nowrap"
+                  style="
+                    background: rgba(255, 255, 255, 0.1);
+                    font-size: 0.75rem;
+                    padding: 0.5em 1em;
+                    letter-spacing: 0.5px;
+                  "
+                  >Select a Role</span
+                >
+              </div>
+              <div class="trending-list">
+                @for (role of trendingRoles; track role.title) {
+                  <div
+                    class="trending-item"
+                    (click)="selectRole(role)"
+                    style="cursor: pointer; transition: opacity 0.3s"
+                    [style.opacity]="
+                      selectedRole && role.title !== selectedRole.title ? '0.4' : '1'
+                    "
+                  >
+                      <span>{{ role.title }}</span>
+                      <!-- <span style="color: #8bd9a8">{{ role.growth }}</span> -->
+
+                    <div
+                      class="progress"
+                      style="height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 0"
+                    >
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        [style.width.%]="role.progress"
+                        style="background: #8bd9a8"
+                        [attr.aria-valuenow]="role.progress"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-3">
+            <div class="section_card bg-2 h-100 d-flex flex-column">
+              @for (r of [selectedRole]; track r!.title) {
+                <div class="animate-content d-flex flex-column h-100 w-100">
+                  <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div class="section_card_title">
+                      Compensation Benchmarks
+                      <p style="opacity: 0.6; font-size: 0.85rem; font-weight: 600">
+                        For {{ r!.title }}
+                      </p>
+                    </div>
+
+                  </div>
+                  <div class="d-flex flex-column gap-3 mt-auto">
+                    <div
+                      class="comp-card p-4 rounded-4"
+                      style="background: rgba(255, 255, 255, 0.5)"
+                    >
+                      <div
+                        class="text-uppercase mb-1"
+                        style="
+                          font-size: 0.7rem;
+                          font-weight: 800;
+                          opacity: 0.5;
+                          letter-spacing: 1px;
+                        "
+                      >
+                        Entry Level
+                      </div>
+                      <div class="d-flex align-items-baseline gap-1">
+                        <span class="display-6">{{ r!.entryLevel }}</span>
+                        <span style="font-size: 0.8rem; font-weight: 600; opacity: 0.5">/ yr</span>
+                      </div>
+                    </div>
+                    <div
+                      class="comp-card p-4 rounded-4"
+                      style="background: rgba(255, 255, 255, 0.5)"
+                    >
+                      <div
+                        class="text-uppercase mb-1"
+                        style="
+                          font-size: 0.7rem;
+                          font-weight: 800;
+                          opacity: 0.5;
+                          letter-spacing: 1px;
+                        "
+                      >
+                        Advanced Level
+                      </div>
+                      <div class="d-flex align-items-baseline gap-1">
+                        <span class="display-6">{{ r!.advancedLevel }}</span>
+                        <span style="font-size: 0.8rem; font-weight: 600; opacity: 0.5">/ yr</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="col-md-4 d-flex flex-column gap-3 mt-3">
+            <div class="section_card bg-2 flex-grow-1">
+              @for (r of [selectedRole]; track r!.title) {
+                <div class="animate-content d-flex flex-column h-100 w-100">
+                  <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div class="section_card_title">
+                      Fastest Growing Skills
+                      <p style="opacity: 0.6; font-size: 0.85rem; font-weight: 600">
+                        For {{ r!.title }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-wrap gap-2">
+                    @for (skill of r!.skills; track skill) {
+                      <span
+                        class="badge rounded-pill border border-dark text-dark text-uppercase px-3 py-2"
+                        style="font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700"
+                        >{{ skill }}</span
+                      >
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+            <button
+              class="btn btn-dark w-100 rounded-4 text-uppercase fw-bolder fs-6 p-4 d-flex justify-content-center align-items-center gap-2"
+              style="background: #111; border: none; letter-spacing: 0.5px"
+            >
+              View Full Report
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 12H19M19 12L12 5M19 12L12 19"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

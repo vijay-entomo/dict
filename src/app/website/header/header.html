@@ -1,0 +1,61 @@
+<header class="header-2026" [class.scrolled]="isScrolled" [class.menu-open]="isMobileMenuOpen">
+  <!-- Dynamic Island Container -->
+  <div class="dynamic-island">
+    <div class="header-inner">
+      <a href="#home">
+        <div class="company-logo"></div>
+      </a>
+      <!-- Desktop Nav -->
+      <nav class="desktop-nav d-none d-xl-flex">
+        <a href="#toolkit" class="nav-link"><span class="link-text">Toolkit</span></a>
+        <a href="#pathways" class="nav-link"><span class="link-text">Pathways</span></a>
+        <!-- <a href="#mentors" class="nav-link"><span class="link-text">Mentors</span></a> -->
+        <a href="#learning" class="nav-link"><span class="link-text">Level Up</span></a>
+        <a href="#evaluations" class="nav-link"><span class="link-text">Assessments</span></a>
+        <a href="#opportunity" class="nav-link"><span class="link-text">Jobs</span></a>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="right-actions">
+        <!-- Sign Up (Desktop) -->
+        <div class="d-none d-xl-block">
+          <button class="btn-glow" type="button">
+            <span class="btn-text">Login</span>
+          </button>
+        </div>
+
+        <!-- Mobile Hamburger Toggle -->
+        <button
+          class="mobile-toggle d-xl-none"
+          (click)="toggleMobileMenu()"
+          aria-label="Toggle Menu"
+        >
+          <div class="hamburger">
+            <span class="line line-1"></span>
+            <span class="line line-2"></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Mobile Overlay -->
+  <div class="mobile-overlay" [class.active]="isMobileMenuOpen">
+    <div class="mobile-menu-inner">
+      <nav class="mobile-nav">
+        <a href="#toolkit" class="nav-link"><span class="link-text">Toolkit</span></a>
+        <a href="#pathways" class="nav-link"><span class="link-text">Pathways</span></a>
+        <!-- <a href="#mentors" class="nav-link"><span class="link-text">Mentors</span></a> -->
+        <a href="#sharpen" class="nav-link"><span class="link-text">Level Up</span></a>
+        <a href="#evaluations" class="nav-link"><span class="link-text">Assessments</span></a>
+        <a href="#opportunity" class="v-link"><span class="link-text">Jobs</span></a>
+      </nav>
+
+      <div class="mobile-actions mt-5" style="--i: 7">
+        <button class="btn-glow w-100 py-3 mb-3 d-flex justify-content-center">
+          <span class="btn-text">Login</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
